@@ -1,0 +1,61 @@
+/* ============================================================
+   GLOBAL STYLES & CSS VARIABLES
+   ============================================================ */
+
+:root {
+  --bg: #0e0e12;
+  --bg2: #141419;
+  --bg3: #1a1a22;
+  --bdr: #222230;
+  --txt: #c0c0cc;
+  --dim: #55556a;
+  --acc: #6c8cff;
+  --acc2: #a855f7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #333340; }
+
+/* Toggle switch */
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+.toggle-track.on { background: var(--acc); }
+.toggle-track.off { background: #2a2a36; }
+.toggle-knob {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle-track.on .toggle-knob { left: 19px; }
+.toggle-track.off .toggle-knob { left: 3px; }
