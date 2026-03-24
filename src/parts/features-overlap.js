@@ -25,13 +25,54 @@ export default {
   ],
   render: (v, g) => {
     const cols = parseInt(v.columns) || 3, ac = v.accentColor || g.primary, dark = v.theme === 'ダーク'
-    const bg = dark ? '#0c0c14' : '#ffffff', cardBg = dark ? '#161620' : '#f8fafc', cardBdr = dark ? '#1e1e2e' : '#e2e8f0', tc = dark ? '#e0e0ea' : '#1a1a1a', sc = dark ? '#888898' : '#888'
-    const pad = { S: '80px 40px', M: '120px 40px', L: '160px 40px' }[v.spacing] || '120px 40px'
+    const bgSec = dark ? '#0c0c14' : '#ffffff', cardBg = dark ? '#161620' : '#f8fafc', cardBdr = dark ? '#1e1e2e' : '#e2e8f0', tc = dark ? '#e0e0ea' : '#1a1a1a', sc = dark ? '#888898' : '#888'
+    const pad = { S: '80px', M: '120px', L: '160px' }[v.spacing] || '120px'
+    const u = 'fo' + Math.random().toString(36).slice(2, 7)
+
     let cards = ''
     for (let i = 1; i <= cols; i++) {
-      const t = v[`card${i}Title`] || `Card ${i}`, tx = v[`card${i}Text`] || '', isC = i === Math.ceil(cols / 2) && cols > 2
-      cards += `<div style="background:${isC ? ac : cardBg};${isC ? '' : `border:1px solid ${cardBdr};`}padding:48px 36px;border-radius:16px;position:relative;z-index:${isC ? 4 : 3};${isC ? `transform:translateY(-16px);box-shadow:0 24px 48px ${ac}30` : ''}"><div style="width:48px;height:48px;background:${isC ? '#ffffff20' : ac + '12'};border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:24px"><div style="width:20px;height:20px;background:${isC ? '#fff' : ac};border-radius:${i % 2 === 0 ? '50%' : '4px'}"></div></div><h3 style="font-size:20px;font-weight:700;color:${isC ? '#fff' : tc};margin:0 0 12px">${t}</h3><p style="font-size:14px;color:${isC ? '#ffffffbb' : sc};line-height:1.8;margin:0${v.showButton ? ' 0 24px' : ''}">${tx}</p>${v.showButton ? `<a href="#" style="display:inline-block;padding:10px 20px;font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;${isC ? `background:#fff;color:${ac}` : `background:${ac};color:#fff`}">${v.buttonText || '詳しく見る →'}</a>` : ''}</div>`
+      const t = v[`card${i}Title`] || `Card ${i}`, tx = v[`card${i}Text`] || ''
+      const isC = i === Math.ceil(cols / 2) && cols > 2
+      cards += `<div class="card${isC ? ' featured' : ''}">
+<div class="icon"><div class="shape" style="border-radius:${i % 2 === 0 ? '50%' : '4px'}"></div></div>
+<h3>${t}</h3><p>${tx}</p>
+${v.showButton ? `<a href="#" class="cbtn">${v.buttonText || '詳しく見る →'}</a>` : ''}
+</div>`
     }
-    return `<section style="padding:${pad};background:${bg};font-family:'Noto Sans JP',sans-serif"><div style="max-width:1200px;margin:0 auto"><div style="text-align:center;margin-bottom:80px"><span style="display:inline-block;font-size:12px;letter-spacing:4px;color:${ac};text-transform:uppercase;margin-bottom:16px;font-weight:600">${v.sectionTitle}</span><p style="font-size:18px;color:${dark ? '#888898' : '#666'};margin:0">${v.sectionSub}</p></div><div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:0;position:relative">${cards}</div></div></section>`
+
+    return `<style>
+.${u}{padding:${pad} 40px;background:${bgSec};font-family:'Noto Sans JP',sans-serif}
+.${u} .wrap{max-width:1200px;margin:0 auto}
+.${u} .hdr{text-align:center;margin-bottom:80px}
+.${u} .hdr span{display:inline-block;font-size:12px;letter-spacing:4px;color:${ac};text-transform:uppercase;margin-bottom:16px;font-weight:600}
+.${u} .hdr p{font-size:18px;color:${dark ? '#888898' : '#666'};margin:0}
+.${u} .grid{display:grid;grid-template-columns:repeat(${cols},1fr);gap:0;position:relative}
+.${u} .card{background:${cardBg};border:1px solid ${cardBdr};padding:48px 36px;border-radius:16px;position:relative;z-index:3}
+.${u} .card.featured{background:${ac};border:none;z-index:4;transform:translateY(-16px);box-shadow:0 24px 48px ${ac}30}
+.${u} .icon{width:48px;height:48px;background:${ac}12;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.${u} .featured .icon{background:#ffffff20}
+.${u} .shape{width:20px;height:20px;background:${ac}}
+.${u} .featured .shape{background:#fff}
+.${u} h3{font-size:20px;font-weight:700;color:${tc};margin:0 0 12px}
+.${u} .featured h3{color:#fff}
+.${u} .card p{font-size:14px;color:${sc};line-height:1.8;margin:0${v.showButton ? ' 0 24px' : ''}}
+.${u} .featured p{color:#ffffffbb}
+.${u} .cbtn{display:inline-block;padding:10px 20px;font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;background:${ac};color:#fff}
+.${u} .featured .cbtn{background:#fff;color:${ac}}
+@media(max-width:768px){
+.${u}{padding:60px 20px}
+.${u} .hdr{margin-bottom:40px}
+.${u} .hdr span{font-size:11px}
+.${u} .hdr p{font-size:15px}
+.${u} .grid{grid-template-columns:1fr;gap:12px}
+.${u} .card{padding:32px 24px}
+.${u} .card.featured{transform:none}
+.${u} h3{font-size:18px}
+}
+</style>
+<section class="${u}"><div class="wrap">
+<div class="hdr"><span>${v.sectionTitle}</span><p>${v.sectionSub}</p></div>
+<div class="grid">${cards}</div>
+</div></section>`
   },
 }
