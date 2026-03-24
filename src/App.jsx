@@ -3,6 +3,12 @@ import { getOrderedCategories } from './parts'
 import Thumbnail from './components/Thumbnail'
 import { shouldShowField, generateFullHTML, downloadHTML, DEFAULT_GLOBAL_COLOR } from './utils/helpers'
 
+const DEVICES = [
+  { key: 'pc', label: 'PC', icon: '🖥', width: '100%' },
+  { key: 'tablet', label: 'Tablet', icon: '📱', width: '768px' },
+  { key: 'mobile', label: 'Mobile', icon: '📲', width: '375px' },
+]
+
 export default function App() {
   const [parts, setParts] = useState([])
   const [editing, setEditing] = useState(null)
@@ -10,11 +16,11 @@ export default function App() {
   const [globalColor, setGlobalColor] = useState({ ...DEFAULT_GLOBAL_COLOR })
   const [openCats, setOpenCats] = useState({})
   const [showGlobalPanel, setShowGlobalPanel] = useState(false)
+  const [device, setDevice] = useState('pc')
   const iframeRef = useRef(null)
 
   const categories = getOrderedCategories()
 
-  // === Actions ===
   const add = (p) => {
     const iid = `${p.id}-${Date.now()}`
     const defs = {}
@@ -39,13 +45,11 @@ export default function App() {
 
   const upd = (iid, k, val) => setVars(pr => ({ ...pr, [iid]: { ...pr[iid], [k]: val } }))
 
-  // === HTML Generation ===
   const genHTML = useCallback(
     () => generateFullHTML(parts, vars, globalColor),
     [parts, vars, globalColor]
   )
 
-  // Live preview
   useEffect(() => {
     if (iframeRef.current && parts.length > 0) {
       iframeRef.current.srcdoc = genHTML()
@@ -56,19 +60,13 @@ export default function App() {
 
   const editPart = parts.find(p => p.iid === editing)
   const editVals = editing ? vars[editing] : null
-
-  // === Styles ===
-  const S = {
-    catalog: { width: 220, borderRight: '1px solid var(--bdr)', display: 'flex', flexDirection: 'column', flexShrink: 0 },
-    center: { width: 320, borderRight: '1px solid var(--bdr)', display: 'flex', flexDirection: 'column', flexShrink: 0 },
-    preview: { flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 },
-  }
+  const currentDevice = DEVICES.find(d => d.key === device)
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
 
       {/* ===== LEFT: CATALOG ===== */}
-      <div style={S.catalog}>
+      <div style={{ width: 220, borderRight: '1px solid var(--bdr)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '12px 10px 8px', borderBottom: '1px solid var(--bdr)', display: 'flex', alignItems: 'center', gap: 5 }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'linear-gradient(135deg, var(--acc), var(--acc2))' }} />
           <span style={{ fontSize: 11, fontWeight: 700, color: '#d0d0dc' }}>パーツ</span>
@@ -110,8 +108,7 @@ export default function App() {
       </div>
 
       {/* ===== CENTER: PARTS LIST + EDITOR ===== */}
-      <div style={S.center}>
-        {/* Toolbar */}
+      <div style={{ width: 320, borderRight: '1px solid var(--bdr)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--bdr)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           <span style={{ fontSize: 10, color: 'var(--dim)' }}>
             構成 <span style={{ color: 'var(--acc)', fontWeight: 700 }}>{parts.length}</span>
@@ -128,7 +125,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Global color panel */}
         {showGlobalPanel && (
           <div style={{ padding: 10, borderBottom: '1px solid var(--bdr)', background: '#12121e' }}>
             <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--acc2)', marginBottom: 8, letterSpacing: 1 }}>グローバル配色</div>
@@ -150,7 +146,6 @@ export default function App() {
         )}
 
         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-          {/* Parts list */}
           <div style={{ padding: 8, borderBottom: editing ? '1px solid var(--bdr)' : 'none' }}>
             {!parts.length ? (
               <div style={{ padding: '40px 0', textAlign: 'center', color: '#2a2a38', fontSize: 11, lineHeight: 1.7 }}>
@@ -182,7 +177,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Editor */}
           {editPart && editVals && (
             <div style={{ padding: '8px 10px', flex: 1, overflowY: 'auto' }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: '#a0a0b0', marginBottom: 3 }}>{editPart.name}</div>
@@ -241,14 +235,82 @@ export default function App() {
         </div>
       </div>
 
-      {/* ===== RIGHT: LIVE PREVIEW ===== */}
-      <div style={S.preview}>
-        <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--bdr)', fontSize: 10, color: 'var(--dim)', flexShrink: 0 }}>
-          ライブプレビュー
+      {/* ===== RIGHT: LIVE PREVIEW with device toggle ===== */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <div style={{ padding: '6px 12px', borderBottom: '1px solid var(--bdr)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+          <span style={{ fontSize: 10, color: 'var(--dim)' }}>ライブプレビュー</span>
+          <div style={{ display: 'flex', gap: 2 }}>
+            {DEVICES.map(d => (
+              <button
+                key={d.key}
+                onClick={() => setDevice(d.key)}
+                style={{
+                  padding: '4px 10px',
+                  fontSize: 9,
+                  fontWeight: 600,
+                  background: device === d.key ? 'var(--acc)' : 'var(--bg3)',
+                  color: device === d.key ? '#fff' : 'var(--dim)',
+                  border: `1px solid ${device === d.key ? 'var(--acc)' : 'var(--bdr)'}`,
+                  borderRadius: 3,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  transition: 'all .15s',
+                }}
+              >
+                <span>{d.icon}</span> {d.label}
+              </button>
+            ))}
+          </div>
         </div>
-        <div style={{ flex: 1, background: parts.length ? '#fff' : 'var(--bg)', overflow: 'hidden' }}>
+        <div style={{
+          flex: 1,
+          background: parts.length ? '#1a1a22' : 'var(--bg)',
+          overflow: 'auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: device === 'pc' ? 'stretch' : 'flex-start',
+          padding: device === 'pc' ? 0 : '20px 0',
+        }}>
           {parts.length ? (
-            <iframe ref={iframeRef} style={{ width: '100%', height: '100%', border: 'none' }} title="preview" />
+            <div style={{
+              width: currentDevice.width,
+              maxWidth: '100%',
+              height: device === 'pc' ? '100%' : 'auto',
+              minHeight: device !== 'pc' ? '100%' : undefined,
+              background: '#fff',
+              boxShadow: device !== 'pc' ? '0 0 40px rgba(0,0,0,.4)' : 'none',
+              borderRadius: device !== 'pc' ? '12px' : 0,
+              overflow: device !== 'pc' ? 'hidden' : 'auto',
+              position: 'relative',
+              transition: 'width .3s ease, border-radius .3s ease',
+            }}>
+              {device !== 'pc' && (
+                <div style={{
+                  height: 28,
+                  background: '#111',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  flexShrink: 0,
+                }}>
+                  <div style={{ width: device === 'mobile' ? 40 : 8, height: device === 'mobile' ? 4 : 8, borderRadius: 4, background: '#333' }} />
+                </div>
+              )}
+              <iframe
+                ref={iframeRef}
+                style={{
+                  width: '100%',
+                  height: device === 'pc' ? '100%' : 'calc(100% - 28px)',
+                  minHeight: device !== 'pc' ? '600px' : undefined,
+                  border: 'none',
+                  display: 'block',
+                }}
+                title="preview"
+              />
+            </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#2a2a38', fontSize: 12 }}>
               パーツを追加するとプレビューが表示されます
