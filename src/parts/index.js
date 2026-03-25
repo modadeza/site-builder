@@ -1,54 +1,35 @@
 /**
  * パーツレジストリ
- * 
- * 新しいパーツを追加する手順:
- * 1. src/parts/ にファイルを作成
- * 2. このファイルに import を追加
- * 3. PARTS 配列に追加
  */
 
-// ヘッダー
+// === コーポレート系 ===
 import headerTransparent from './header-transparent'
 import headerSolid from './header-solid'
-
-// ヒーロー
 import heroDiagonal from './hero-diagonal'
 import heroSplit from './hero-split'
-
-// 特徴・サービス
 import featuresOverlap from './features-overlap'
-
-// 実績・事例
 import worksGrid from './works-grid'
-
-// 会社概要
 import aboutEditorial from './about-editorial'
-
-// チーム紹介
 import teamCards from './team-cards'
-
-// お客様の声
 import testimonialCards from './testimonial-cards'
-
-// 料金プラン
 import pricingCards from './pricing-cards'
-
-// FAQ
 import faqAccordion from './faq-accordion'
-
-// ニュース
 import newsList from './news-list'
-
-// CTA
 import ctaGradient from './cta-gradient'
-
-// お問い合わせ
 import contactSplit from './contact-split'
-
-// フッター
 import footerColumns from './footer-columns'
 
+// === EC系 ===
+import ecHeader from './ec-header'
+import ecBanner from './ec-banner'
+import ecCampaignGrid from './ec-campaign-grid'
+import ecCategorySelect from './ec-category-select'
+import ecProductRanking from './ec-product-ranking'
+import ecPriceRange from './ec-price-range'
+import ecContact from './ec-contact'
+
 const PARTS = [
+  // コーポレート
   headerTransparent,
   headerSolid,
   heroDiagonal,
@@ -64,9 +45,18 @@ const PARTS = [
   ctaGradient,
   contactSplit,
   footerColumns,
+  // EC
+  ecHeader,
+  ecBanner,
+  ecCampaignGrid,
+  ecCategorySelect,
+  ecProductRanking,
+  ecPriceRange,
+  ecContact,
 ]
 
 export const CATEGORY_ORDER = [
+  // コーポレート
   'ヘッダー',
   'ヒーロー',
   '特徴・サービス',
@@ -80,6 +70,12 @@ export const CATEGORY_ORDER = [
   'CTA',
   'お問い合わせ',
   'フッター',
+  // EC
+  'EC：ヘッダー',
+  'EC：バナー',
+  'EC：ナビゲーション',
+  'EC：商品',
+  'EC：お問い合わせ',
 ]
 
 export function getPartsByCategory() {

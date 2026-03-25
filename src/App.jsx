@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { getOrderedCategories } from './parts'
 import Thumbnail from './components/Thumbnail'
-import { shouldShowField, generateFullHTML, downloadHTML, DEFAULT_GLOBAL_COLOR } from './utils/helpers'
+import { shouldShowField, generateFullHTML, downloadHTML, downloadAsZip, DEFAULT_GLOBAL_COLOR } from './utils/helpers'
 
 const DEVICES = [
   { key: 'pc', label: 'PC', icon: '🖥', width: '100%' },
@@ -57,6 +57,7 @@ export default function App() {
   }, [genHTML, parts.length])
 
   const handleDownload = () => downloadHTML(genHTML())
+  const handleDownloadZip = () => downloadAsZip(parts, vars, globalColor)
 
   const editPart = parts.find(p => p.iid === editing)
   const editVals = editing ? vars[editing] : null
@@ -118,9 +119,13 @@ export default function App() {
               style={{ padding: '4px 8px', background: showGlobalPanel ? '#2a1e3e' : 'var(--bg3)', color: showGlobalPanel ? 'var(--acc2)' : 'var(--dim)', border: `1px solid ${showGlobalPanel ? '#4a2e6e' : 'var(--bdr)'}`, borderRadius: 4, fontSize: 9, fontWeight: 600, cursor: 'pointer' }}>
               🎨 配色
             </button>
-            <button onClick={handleDownload} disabled={!parts.length}
+            <button onClick={handleDownloadZip} disabled={!parts.length}
               style={{ padding: '4px 8px', background: parts.length ? 'linear-gradient(135deg, var(--acc), var(--acc2))' : 'var(--bg3)', color: '#fff', border: 'none', borderRadius: 4, fontSize: 9, fontWeight: 600, cursor: parts.length ? 'pointer' : 'not-allowed', opacity: parts.length ? 1 : .4 }}>
-              ↓ HTML
+              ↓ ZIP
+            </button>
+            <button onClick={handleDownload} disabled={!parts.length}
+              style={{ padding: '4px 8px', background: parts.length ? 'var(--bg3)' : 'var(--bg3)', color: parts.length ? 'var(--dim)' : 'var(--dim)', border: '1px solid var(--bdr)', borderRadius: 4, fontSize: 9, fontWeight: 600, cursor: parts.length ? 'pointer' : 'not-allowed', opacity: parts.length ? 1 : .4 }}>
+              HTML
             </button>
           </div>
         </div>
