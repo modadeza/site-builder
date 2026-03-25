@@ -28,6 +28,7 @@ body {
 
 #root {
   height: 100vh;
+  height: 100dvh;
 }
 
 /* Scrollbar */
@@ -59,3 +60,52 @@ body {
 }
 .toggle-track.on .toggle-knob { left: 19px; }
 .toggle-track.off .toggle-knob { left: 3px; }
+
+/* Mobile tab bar */
+.mobile-tabs {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--bdr);
+    flex-shrink: 0;
+  }
+  .mobile-tabs button {
+    flex: 1;
+    padding: 10px 4px;
+    background: var(--bg);
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all .15s;
+  }
+  .mobile-tabs button.active {
+    color: var(--acc);
+    border-bottom-color: var(--acc);
+    background: var(--bg2);
+  }
+  .desktop-layout {
+    display: none !important;
+  }
+  .mobile-layout {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-layout {
+    display: none !important;
+  }
+  .desktop-layout {
+    display: flex !important;
+  }
+}
